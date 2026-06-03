@@ -1,12 +1,15 @@
-warn("[Hell-Shade] Checking executor")
+warn("[HellShade] Checking executor")
 
+-- Resolve key from environment (getgenv, shared, _G, or caller environment)
 local function getScriptKey()
+    -- Check globals/genv
     local genv = (typeof(getgenv) == "function" and getgenv()) or {}
     local key = genv.script_key or genv.SCRIPT_KEY or shared.script_key or shared.SCRIPT_KEY or _G.script_key or _G.SCRIPT_KEY
     if key and key ~= "" then
         return key
     end
 
+    -- Check calling environment levels
     for level = 1, 6 do
         local success, env = pcall(getfenv, level)
         if success and env then
@@ -22,13 +25,14 @@ end
 local script_key = getScriptKey()
 
 if not script_key or script_key == "" then
-    warn("[Hell-Shade Loader] Error: No key found! Please define SCRIPT_KEY before running this script.")
+    warn("[HellShade Loader] Error: No key found! Please define SCRIPT_KEY before running this script.")
     game:GetService("Players").LocalPlayer:Kick(
-        "[Hell-Shade Loader]\nKey not found!\n\nPlease make sure to define the key like this:\nSCRIPT_KEY = \"YOUR_KEY_HERE\"\nloadstring(game:HttpGet(...))()"
+        "[HellShade Loader]\nKey not found!\n\nPlease make sure to define the key like this:\nSCRIPT_KEY = \"YOUR_KEY_HERE\"\nloadstring(game:HttpGet(...))()"
     )
     return
 end
 
+-- Propagate key to globals and environments for the loaded script
 local genv = (typeof(getgenv) == "function" and getgenv())
 if genv then
     genv.SCRIPT_KEY = script_key
@@ -41,22 +45,18 @@ pcall(function()
     getfenv(1).script_key = script_key
 end)
 
-local SupportedExecutors = {
-    "volt",
-    "potassium",
-    "volcano",
-    "swift",
-    "seliware",
-    "madium",
-    "Synapse Z",
+local BlacklistedExecutors = {
+    "xeno",
+    "solara",
+    "velocity",
 }
 
-local function isSupportedExecutor()
+local function isBlacklistedExecutor()
     if typeof(identifyexecutor) ~= "function" then
         return false, "Unknown"
     end
     local exec = string.lower(tostring(identifyexecutor()))
-    for _, name in ipairs(SupportedExecutors) do
+    for _, name in ipairs(BlacklistedExecutors) do
         if exec:find(name, 1, true) then
             return true, exec
         end
@@ -64,17 +64,17 @@ local function isSupportedExecutor()
     return false, exec
 end
 
-local supported, executorName = isSupportedExecutor()
-if not supported then
-    warn("[Hell-Shade] Unsupported executor detected. Join: https://discord.gg/VBtwWkdR9s")
+local blacklisted, executorName = isBlacklistedExecutor()
+if blacklisted then
+    warn("[HellShade] Blacklisted executor detected: " .. tostring(executorName) .. ". Join: https://discord.gg/VBtwWkdR9s")
     game:GetService("Players").LocalPlayer:Kick(
-        "[Hell-Shade Loader]\nExecutor not supported.\n\nSupported: Volt, Potassium, Volcano, Swift, Seliware, madium\n\nJoin: https://discord.gg/VBtwWkdR9s"
+        "[HellShade Loader]\nYour executor (" .. tostring(executorName) .. ") is blacklisted.\n\nJoin: https://discord.gg/VBtwWkdR9s"
     )
     setclipboard("https://discord.gg/VBtwWkdR9s")
     return
 end
 
-warn(("[Hell-Shade] Detected executor: %s"):format(executorName))
+warn(("[HellShade] Detected executor: %s"):format(executorName))
 
 local Games = {
     CB = {
@@ -119,7 +119,7 @@ local function loadOnActor(sourceUrl)
         actor = game:GetService("Players").LocalPlayer.PlayerScripts:FindFirstChild("Client")
     end
     if not actor then
-        warn("[Hell-Shade] Failed to get actor")
+        warn("[HellShade] Failed to get actor")
         return false
     end
 
@@ -135,16 +135,16 @@ local placeId = tostring(game.PlaceId)
 local gameCode, gameData = locateGame(placeId)
 
 if not gameCode or not gameData then
-    warn("[Hell-Shade] Game is unsupported!")
+    warn("[HellShade] Game is unsupported!")
     return
 end
 
 if not gameData.SourceUrl or gameData.SourceUrl:find("PLACEHOLDER", 1, true) then
-    warn(("[Hell-Shade] %s (%s) is not configured yet (missing loader URL)."):format(gameData.Name, gameCode))
+    warn(("[HellShade] %s (%s) is not configured yet (missing loader URL)."):format(gameData.Name, gameCode))
     return
 end
 
-warn(("[Hell-Shade] Detected game: %s (%s). Loading script..."):format(gameData.Name, gameCode))
+warn(("[HellShade] Detected game: %s (%s). Loading script..."):format(gameData.Name, gameCode))
 
 if gameData.UseActor then
     if not loadOnActor(gameData.SourceUrl) then
