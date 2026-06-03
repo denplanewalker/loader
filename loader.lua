@@ -48,6 +48,7 @@ local SupportedExecutors = {
     "swift",
     "seliware",
     "madium",
+    "Synapse Z",
 }
 
 local function isSupportedExecutor()
