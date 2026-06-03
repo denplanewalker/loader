@@ -1,15 +1,12 @@
 warn("[Hell-Shade] Checking executor")
 
--- Resolve key from environment (getgenv, shared, _G, or caller environment)
 local function getScriptKey()
-    -- Check globals/genv
     local genv = (typeof(getgenv) == "function" and getgenv()) or {}
     local key = genv.script_key or genv.SCRIPT_KEY or shared.script_key or shared.SCRIPT_KEY or _G.script_key or _G.SCRIPT_KEY
     if key and key ~= "" then
         return key
     end
 
-    -- Check calling environment levels
     for level = 1, 6 do
         local success, env = pcall(getfenv, level)
         if success and env then
@@ -32,7 +29,6 @@ if not script_key or script_key == "" then
     return
 end
 
--- Propagate key to globals and environments for the loaded script
 local genv = (typeof(getgenv) == "function" and getgenv())
 if genv then
     genv.SCRIPT_KEY = script_key
