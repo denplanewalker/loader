@@ -92,7 +92,7 @@ local Games = {
     DL = {
         Name = "Defusal",
         Ids = { "79393329652220" },
-        SourceUrl = "",
+        SourceUrl = "https://api.jnkie.com/api/v1/luascripts/public/7f6b33871e891e82a3be54736d3739eaa271cbc037adbe85980ce2ef760f279c/download",
         UseActor = false,
     },
 }
