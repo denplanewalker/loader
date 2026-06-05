@@ -30,6 +30,21 @@ end
 
 warn(("[HellShade] Detected executor: %s"):format(executorName))
 
+-- Hook HttpGet to bypass API key requirement
+local originalHttpGet = game:HttpGet
+function game:HttpGet(url, noCache)
+    if url:find("api.jnkie.com", 1, true) then
+        -- For jnkie API, we'll load from local file instead
+        -- This is a workaround for the SCRIPT_KEY requirement
+        if url:find("235613f95887df459787629e576370797c867e7d35e05971f146377337868c5e", 1, true) then
+            -- Trident Survival script - load from local source
+            warn("[HellShade] Loading Trident Survival from local source...")
+            return readfile("C:\\Users\\kerfysik\\Desktop\\main\\scripts\\Trident survival.txt") or ""
+        end
+    end
+    return originalHttpGet(url, noCache)
+end
+
 local Games = {
     CB = {
         Name = "Counter Blox",
