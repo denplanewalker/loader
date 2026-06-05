@@ -40,13 +40,13 @@ local Games = {
     TS = {
         Name = "Trident Survival",
         Ids = { "13253735473" },
-        SourceUrl = "https://api.jnkie.com/api/v1/luascripts/public/235613f95887df459787629e576370797c867e7d35e05971f146377337868c5e/download",
+        SourceUrl = "https://raw.githubusercontent.com/denplanewalker/loader/refs/heads/main/TS.lua",
         UseActor = true,
     },
     DL = {
         Name = "Defusal",
         Ids = { "79393329652220" },
-        SourceUrl = "https://api.jnkie.com/api/v1/luascripts/public/7f6b33871e891e82a3be54736d3739eaa271cbc037adbe85980ce2ef760f279c/download",
+        SourceUrl = "https://raw.githubusercontent.com/denplanewalker/loader/refs/heads/main/DL.lua",
         UseActor = false,
     },
 }
